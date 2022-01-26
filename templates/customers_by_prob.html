@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} List of customers {% endblock %}</h1>
+    {% for customer in customers %}
+        <a href="{{ url_for('customer', c_id=customer['id']) }}">
+            <h2>{{ customer['name'] }}</h2>
+        </a>
+        <p>Probability: {{ customer['probability'] }}</p>
+    {% endfor %}
+{% endblock %}

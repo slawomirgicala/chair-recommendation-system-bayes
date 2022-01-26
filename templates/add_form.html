@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Add a customer {% endblock %}</h1>
+    <form method="post">
+        <label for="title">Name*</label>
+        <br>
+        <input type="text" name="name"
+               placeholder="Customer name"
+               value="{{ request.form['name'] }}"/>
+        <br>
+
+        <p>Earnings</p>
+        <input type="radio" id="LOW" name="earnings" value="LOW">
+        <label for="LOW">LOW</label>
+        <br>
+        <input type="radio" id="MIDDLE" name="earnings" value="MIDDLE">
+        <label for="MIDDLE">MIDDLE</label>
+        <br>
+        <input type="radio" id="HIGH" name="earnings" value="HIGH">
+        <label for="HIGH">HIGH</label>
+
+        <p>Sedentary lifestyle</p>
+        <input type="radio" id="YES" name="sedentary" value="YES">
+        <label for="YES">YES</label>
+        <br>
+        <input type="radio" id="NO" name="sedentary" value="NO">
+        <label for="NO">NO</label>
+
+
+        <br><br>
+        <button type="submit">Submit</button>
+    </form>
+{% endblock %}

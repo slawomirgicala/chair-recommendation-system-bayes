@@ -25,13 +25,35 @@ def add_customer():
         name = request.form['name']
         ergonomic_evidence = {}
         earnings = None
+        sedentary = None
+        weightlifting = None
+        yoga = None
+        cardio = None
+        sex = None
+        married = None
         if 'earnings' in request.form:
             earnings = request.form['earnings']
             ergonomic_evidence['earnings'] = earnings
-        sedentary = None
         if 'sedentary' in request.form:
             sedentary = request.form['sedentary']
             ergonomic_evidence['sedentary'] = sedentary
+        if 'weightlifting' in request.form:
+            weightlifting = request.form['weightlifting']
+            ergonomic_evidence['weightlifting'] = weightlifting
+        if 'yoga' in request.form:
+            yoga = request.form['yoga']
+            ergonomic_evidence['yoga'] = yoga
+        if 'cardio' in request.form:
+            cardio = request.form['cardio']
+            ergonomic_evidence['cardio'] = cardio
+        if 'sex' in request.form:
+            sex = request.form['sex']
+            # na razie nie uzywamy tego do szacowania ergonomic, ani nie dodajemy do drzewka
+            #ergonomic_evidence['sex'] = sex
+        if 'married' in request.form:
+            married = request.form['married']
+            # na razie nie uzywamy tego do szacowania ergonomic, ani nie dodajemy do drzewka
+            #ergonomic_evidence['married'] = married
         ergonomic = ergonomic_probability(ergonomic_evidence)
 
         if not name:
@@ -42,7 +64,12 @@ def add_customer():
                 'name': name,
                 'earnings': earnings,
                 'sedentary': sedentary,
-                'ergonomic': ergonomic
+                'ergonomic': ergonomic,
+                'weightlifting': weightlifting,
+                'yoga': yoga,
+                'sex': sex,
+                'cardio': cardio,
+                'married': married
             }
             customer_id = customer_id + 1
             return redirect(url_for('home'))

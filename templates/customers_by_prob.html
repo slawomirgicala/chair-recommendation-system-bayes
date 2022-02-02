@@ -6,6 +6,11 @@
         <a href="{{ url_for('customer', c_id=customer['id']) }}">
             <h2>{{ customer['name'] }}</h2>
         </a>
-        <p>Probability: {{ customer['probability'] }}</p>
+        <p>Probability:</p>
+        <ul>
+            {% for k, v in customer['probability'].items() %}
+                <li>{{ k }} - {{ v }} %</li>
+            {% endfor %}
+        </ul>
     {% endfor %}
 {% endblock %}

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>{% block title %} {% endblock %} - ChairRecommendation</title>
@@ -9,6 +10,7 @@
             margin: 5px;
             background-color: #f3f3f3
         }
+
         nav a {
             color: #d64161;
             font-size: 2em;
@@ -22,15 +24,18 @@
             color: #970020;
             background-color: #ffd5de;
         }
-
     </style>
 </head>
+
 <body>
     <nav>
         <a href="{{ url_for('index') }}">FlaskApp</a>
         <a href="{{ url_for('add_customer') }}">Add</a>
         <a href="{{ url_for('all_customers') }}">All</a>
-        <a href="{{ url_for('customers_by_ergonomic') }}">Ergo</a>
+        <a href="{{ url_for('ergonomic') }}">Ergo</a>
+        <a href="{{ url_for('leasing') }}">Lease</a>
+        <a href="{{ url_for('babychair') }}">Baby</a>
+        <a href="{{ url_for('residence') }}">Residence</a>
     </nav>
     <hr>
     <div class="content">
@@ -40,4 +45,5 @@
         {% block content %} {% endblock %}
     </div>
 </body>
+
 </html>

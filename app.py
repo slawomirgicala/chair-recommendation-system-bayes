@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask, flash, redirect, render_template, request, url_for
 
-from bayes import ergonomic_probability
+from bayes import model_probabilites
 from database import customers
+
+CATEGORIES = ['ergonomic', 'baby_chair', 'leasing', 'residence']
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your secret key'
@@ -49,12 +51,16 @@ def add_customer():
         if 'sex' in request.form:
             sex = request.form['sex']
             # na razie nie uzywamy tego do szacowania ergonomic, ani nie dodajemy do drzewka
-            #ergonomic_evidence['sex'] = sex
+            # ergonomic_evidence['sex'] = sex
         if 'married' in request.form:
             married = request.form['married']
             # na razie nie uzywamy tego do szacowania ergonomic, ani nie dodajemy do drzewka
-            #ergonomic_evidence['married'] = married
-        ergonomic = ergonomic_probability(ergonomic_evidence)
+            # ergonomic_evidence['married'] = married
+
+        results = {}
+
+        for c in CATEGORIES:
+            results[c] = model_probabilites(ergonomic_evidence, [c])
 
         if not name:
             flash('Name is required!')
@@ -64,13 +70,16 @@ def add_customer():
                 'name': name,
                 'earnings': earnings,
                 'sedentary': sedentary,
-                'ergonomic': ergonomic,
                 'weightlifting': weightlifting,
                 'yoga': yoga,
                 'sex': sex,
                 'cardio': cardio,
-                'married': married
+                'married': married,
             }
+            
+            for c in CATEGORIES:
+                customers[customer_id][c] = results[c][c]
+            
             customer_id = customer_id + 1
             return redirect(url_for('home'))
     return render_template('add_form.html')
@@ -85,17 +94,49 @@ def all_customers():
 def customer(c_id):
     if c_id in customers:
         c = customers[c_id]
-        return render_template('customer.html', customer=c)
+        return render_template('customer.html', customer=c, probs=CATEGORIES)
     else:
         flash('No such customer!')
         return redirect(url_for('home'))
 
 
-@app.route('/customers_by_ergonomic')
-def customers_by_ergonomic():
-    sorted_customers = sorted(list(customers.values()), key=lambda d: d['ergonomic'], reverse=True)
+@app.route('/ergonomic')
+def ergonomic():
+    sorted_customers = sorted(
+        list(customers.values()), key=lambda d: d['ergonomic'], reverse=True
+    )
     for c in sorted_customers:
         c['probability'] = c['ergonomic']
+    return render_template('customers_by_prob.html', customers=sorted_customers)
+
+
+@app.route('/leasing')
+def leasing():
+    sorted_customers = sorted(
+        list(customers.values()), key=lambda d: d['leasing'], reverse=True
+    )
+    for c in sorted_customers:
+        c['probability'] = c['leasing']
+    return render_template('customers_by_prob.html', customers=sorted_customers)
+
+
+@app.route('/babychair')
+def babychair():
+    sorted_customers = sorted(
+        list(customers.values()), key=lambda d: d['baby_chair'], reverse=True
+    )
+    for c in sorted_customers:
+        c['probability'] = c['baby_chair']
+    return render_template('customers_by_prob.html', customers=sorted_customers)
+
+
+@app.route('/residence')
+def residence():
+    sorted_customers = sorted(
+        list(customers.values()), key=lambda d: d['residence'], reverse=True
+    )
+    for c in sorted_customers:
+        c['probability'] = c['residence']
     return render_template('customers_by_prob.html', customers=sorted_customers)
 
 

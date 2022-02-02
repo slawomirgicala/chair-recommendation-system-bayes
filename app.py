@@ -7,7 +7,17 @@ CATEGORIES = ['ergonomic', 'baby_chair', 'leasing', 'residence']
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your secret key'
-customer_id = 0
+customer_id = len(customers)
+
+
+def seed_database():
+    for k,v in customers.items():
+        v_c = v.copy()
+        del v_c['id']
+        del v_c['name']
+        
+        for c in CATEGORIES:
+            customers[k][c] = model_probabilites(v_c, [c])[c]
 
 
 @app.route('/')
@@ -102,43 +112,66 @@ def customer(c_id):
 
 @app.route('/ergonomic')
 def ergonomic():
-    sorted_customers = sorted(
-        list(customers.values()), key=lambda d: d['ergonomic'], reverse=True
-    )
-    for c in sorted_customers:
-        c['probability'] = c['ergonomic']
-    return render_template('customers_by_prob.html', customers=sorted_customers)
+    customers_prob = []
+  
+    for c in customers.values():
+        prob = {
+            'id': c['id'],
+            'name': c['name'],
+            'probability':  c['ergonomic']
+        }
+
+        customers_prob.append(prob)
+        
+    return render_template('customers_by_prob.html', customers=customers_prob)
 
 
 @app.route('/leasing')
 def leasing():
-    sorted_customers = sorted(
-        list(customers.values()), key=lambda d: d['leasing'], reverse=True
-    )
-    for c in sorted_customers:
-        c['probability'] = c['leasing']
-    return render_template('customers_by_prob.html', customers=sorted_customers)
+    customers_prob = []
+  
+    for c in customers.values():
+        prob = {
+            'id': c['id'],
+            'name': c['name'],
+            'probability':  c['leasing']
+        }
+        customers_prob.append(prob)
+    
+    return render_template('customers_by_prob.html', customers=customers_prob)
 
 
 @app.route('/babychair')
 def babychair():
-    sorted_customers = sorted(
-        list(customers.values()), key=lambda d: d['baby_chair'], reverse=True
-    )
-    for c in sorted_customers:
-        c['probability'] = c['baby_chair']
-    return render_template('customers_by_prob.html', customers=sorted_customers)
+    customers_prob = []
+  
+    for c in customers.values():
+        prob = {
+            'id': c['id'],
+            'name': c['name'],
+            'probability':  c['baby_chair']
+        }
+
+        customers_prob.append(prob)
+
+    return render_template('customers_by_prob.html', customers=customers_prob)
 
 
 @app.route('/residence')
 def residence():
-    sorted_customers = sorted(
-        list(customers.values()), key=lambda d: d['residence'], reverse=True
-    )
-    for c in sorted_customers:
-        c['probability'] = c['residence']
-    return render_template('customers_by_prob.html', customers=sorted_customers)
+    customers_prob = []
+  
+    for c in customers.values():
+        prob = {
+            'id': c['id'],
+            'name': c['name'],
+            'probability':  c['residence']
+        }
+
+        customers_prob.append(prob)
+    return render_template('customers_by_prob.html', customers=customers_prob)
 
 
 if __name__ == '__main__':
+    seed_database()
     app.run()

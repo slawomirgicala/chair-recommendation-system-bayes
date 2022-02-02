@@ -5,6 +5,18 @@ from database import customers
 
 CATEGORIES = ['ergonomic', 'baby_chair', 'leasing', 'residence']
 
+FIELDS = [
+        'earnings',
+        'sedentary',
+        'weightlifting',
+        'yoga',
+        'cardio',
+        'sex',
+        'married',
+        'age',
+        'traveller',
+    ]
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your secret key'
 customer_id = len(customers)
@@ -36,36 +48,10 @@ def add_customer():
     if request.method == 'POST':
         name = request.form['name']
         ergonomic_evidence = {}
-        earnings = None
-        sedentary = None
-        weightlifting = None
-        yoga = None
-        cardio = None
-        sex = None
-        married = None
-        if 'earnings' in request.form:
-            earnings = request.form['earnings']
-            ergonomic_evidence['earnings'] = earnings
-        if 'sedentary' in request.form:
-            sedentary = request.form['sedentary']
-            ergonomic_evidence['sedentary'] = sedentary
-        if 'weightlifting' in request.form:
-            weightlifting = request.form['weightlifting']
-            ergonomic_evidence['weightlifting'] = weightlifting
-        if 'yoga' in request.form:
-            yoga = request.form['yoga']
-            ergonomic_evidence['yoga'] = yoga
-        if 'cardio' in request.form:
-            cardio = request.form['cardio']
-            ergonomic_evidence['cardio'] = cardio
-        if 'sex' in request.form:
-            sex = request.form['sex']
-            # na razie nie uzywamy tego do szacowania ergonomic, ani nie dodajemy do drzewka
-            # ergonomic_evidence['sex'] = sex
-        if 'married' in request.form:
-            married = request.form['married']
-            # na razie nie uzywamy tego do szacowania ergonomic, ani nie dodajemy do drzewka
-            # ergonomic_evidence['married'] = married
+
+        for f in FIELDS:
+            if f in request.form:
+                ergonomic_evidence[f] = request.form[f]
 
         results = {}
 
@@ -75,20 +61,13 @@ def add_customer():
         if not name:
             flash('Name is required!')
         else:
-            customers[customer_id] = {
-                'id': customer_id,
-                'name': name,
-                'earnings': earnings,
-                'sedentary': sedentary,
-                'weightlifting': weightlifting,
-                'yoga': yoga,
-                'sex': sex,
-                'cardio': cardio,
-                'married': married,
-            }
-            
+            ergonomic_evidence['id'] = customer_id
+            ergonomic_evidence['name'] = name
+
             for c in CATEGORIES:
-                customers[customer_id][c] = results[c][c]
+                ergonomic_evidence[c] = results[c][c]
+            
+            customers[customer_id] = ergonomic_evidence
             
             customer_id = customer_id + 1
             return redirect(url_for('home'))
